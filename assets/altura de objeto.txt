@@ -1,0 +1,2 @@
+largura 351
+altura 530
