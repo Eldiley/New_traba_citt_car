@@ -5,8 +5,9 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y:80 },
-            debug: false
+            gravity: { y:50}, //define a força da gravidade 
+            debug: false // ativa a exibição de informações de deputação da fisica
+
         }
     },
     scene: {
@@ -90,38 +91,31 @@ function create ()
 
     player = this.physics.add.sprite(400, 550, 'principal');
     car1 = this.physics.add.sprite(230,0,'car1');
-    car2 = this.physics.add.sprite(300,0,'car2');
-    car3 = this.physics.add.sprite(170,0,'car3');
-    car4 = this.physics.add.sprite(500,0,'car4');
-    car5 = this.physics.add.sprite(600,0,'car5');
-    car6 = this.physics.add.sprite(650,0,'car6');
-    car7 = this.physics.add.sprite(400,0,'car7');
-
+    car2 = this.physics.add.sprite(400,0,'car2');
+    car3 = this.physics.add.sprite(670,0,'car3');
+    
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
    
     //velocidade do objeto car1
     
 
-    car1.setVelocityY(Math.floor(Math.random() * 50) + 50)
-    this.physics.add.existing(car1)
-    car2.setVelocityY(Math.floor(Math.random() * 60) + 60)
-    this.physics.add.existing(car2)
-    car3.setVelocityY(Math.floor(Math.random() * 70) + 70)
-    this.physics.add.existing(car3)
-    car4.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car4)
-    car5.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car5)
-    car6.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car6)
-    car7.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car7)
+    
+    car1.setVelocityY(Phaser.Math.Between(2,2));
+    car2.setVelocityY(Phaser.Math.Between(2,2));
+    car3.setVelocityY(Phaser.Math.Between(2,2));
+    
+    
+    
+    
+    
 
 
     cursors = this.input.keyboard.createCursorKeys();
     mKey = this.input.keyboard.addKey('M');
     nKey = this.input.keyboard.addKey('N');
+
+    var grupo = this.add.group();
 
     stars = this.physics.add.group({
         key: 'star',
@@ -135,11 +129,12 @@ function create ()
 
     });
     this.physics.add.collider( platforms,stars);
+    
 
     this.physics.add.collider(player, platforms);
     player.canJump = true;
     this.physics.add.overlap(player, stars, collectStar, null, this);
-    
+   
     // adicionar objetos no grupo
 }
 
@@ -178,12 +173,26 @@ function update ()
 
     
     moveScenery(this.estrada, scenarySpeed);
-    if(gameOver){
-        return;
-    }
+   if(car1.y > 600){
+        car1.setY(0);
+        car1.x = Phaser.Math.Between(0, 700);
+   }
+   if(car2.y > 600){
+    car2.setY(0);
+    car2.x = Phaser.Math.Between(0, 700);
+}
+if(car3.y > 600){
+    car3.setY(0);
+    car3.x = Phaser.Math.Between(0, 700);
+}
+if(stars.y > 600){
+    stars.setY(0);
+    stars.x = Phaser.Math.Between(0, 700);
+}
 
     
 }
+
 
 //funcao para creiar movimento dos elementos do cenario
 function moveScenery (estrada, speed){
@@ -194,3 +203,4 @@ function collectStar (player, star)
 {
 star.disableBody(true, true);
 }
+
