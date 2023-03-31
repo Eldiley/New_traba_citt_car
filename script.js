@@ -185,10 +185,7 @@ if(car3.y > 600){
     car3.setY(0);
     car3.x = Phaser.Math.Between(0, 700);
 }
-if(stars.y > 600){
-    stars.setY(0);
-    stars.x = Phaser.Math.Between(0, 700);
-}
+
 
     
 }
