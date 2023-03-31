@@ -1,2 +1,2 @@
 os arquivo de jogo ainda esta por terminar 
-falta fazer um loop em objetos, adicionar plantas e movimentos nelas
+ja consegui fazer o loop das imagem , falta adicionar plantas e movimentos nelas
