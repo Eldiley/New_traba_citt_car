@@ -48,6 +48,8 @@ var cursors;
 var speed = 5;
 var mKey;
 var nKey;
+var fallingObjects;
+
 
 
 var scenarySpeed = 1; // variavel para definir a velocidade do cenario
@@ -89,57 +91,36 @@ function create ()
 
 
     player = this.physics.add.sprite(400, 550, 'principal');
-    car1 = this.physics.add.sprite(230,0,'car1');
-    car2 = this.physics.add.sprite(300,0,'car2');
-    car3 = this.physics.add.sprite(170,0,'car3');
-    car4 = this.physics.add.sprite(500,0,'car4');
-    car5 = this.physics.add.sprite(600,0,'car5');
-    car6 = this.physics.add.sprite(650,0,'car6');
-    car7 = this.physics.add.sprite(400,0,'car7');
+    
 
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
+
+    
    
     //velocidade do objeto car1
     
 
-    car1.setVelocityY(Math.floor(Math.random() * 50) + 50)
-    this.physics.add.existing(car1)
-    car2.setVelocityY(Math.floor(Math.random() * 60) + 60)
-    this.physics.add.existing(car2)
-    car3.setVelocityY(Math.floor(Math.random() * 70) + 70)
-    this.physics.add.existing(car3)
-    car4.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car4)
-    car5.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car5)
-    car6.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car6)
-    car7.setVelocityY(Math.floor(Math.random() * 80) + 80)
-    this.physics.add.existing(car7)
+    
 
 
     cursors = this.input.keyboard.createCursorKeys();
     mKey = this.input.keyboard.addKey('M');
     nKey = this.input.keyboard.addKey('N');
 
-    stars = this.physics.add.group({
-        key: 'star',
-        repeat: 3,
-        setXY: { x:150, y:0, stepX:150, stepY:0}
-    })
-    
-    stars.children.iterate(function (child) {
-
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
-    });
-    this.physics.add.collider( platforms,stars);
 
     this.physics.add.collider(player, platforms);
     player.canJump = true;
-    this.physics.add.overlap(player, stars, collectStar, null, this);
-    
+     
+    fallingObjects = this.physics.add.group();
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObject,
+        callbackScope: this, 
+        loop: true 
+    });
+
+
     // adicionar objetos no grupo
 }
 
@@ -184,13 +165,18 @@ function update ()
 
     
 }
+function createFallingObject() {
+    var x = Phaser.Math.Between(0, game.config.width);
+    var y = -50;
+    var object = this.physics.add.sprite(x, y, 'car1','car2');
+    fallingObjects.add(object);
+    object.setGravityY(200);
+    object.setBounce(0.5);
+}
+
 
 //funcao para creiar movimento dos elementos do cenario
 function moveScenery (estrada, speed){
     // deslocamento vertical dos elemento
     estrada.tilePsitionY += speed *3;
-}
-function collectStar (player, star)
-{
-star.disableBody(true, true);
 }
