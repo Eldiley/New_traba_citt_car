@@ -168,7 +168,7 @@ function update ()
 function createFallingObject() {
     var x = Phaser.Math.Between(0, game.config.width);
     var y = -50;
-    var object = this.physics.add.sprite(x, y, 'car1','car2');
+    var object = this.physics.add.sprite(x, y, 'car1');
     fallingObjects.add(object);
     object.setGravityY(200);
     object.setBounce(0.5);
