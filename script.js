@@ -112,10 +112,18 @@ function create ()
     this.physics.add.collider(player, platforms);
     player.canJump = true;
      
-    fallingObjects = this.physics.add.group();
+    grupo1 = this.physics.add.group();
+    grupo2 = this.physics.add.group();
+
     this.time.addEvent({ 
         delay: 1000,
         callback: createFallingObject,
+        callbackScope: this, 
+        loop: true 
+    });
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObject2,
         callbackScope: this, 
         loop: true 
     });
@@ -168,10 +176,18 @@ function update ()
 function createFallingObject() {
     var x = Phaser.Math.Between(0, game.config.width);
     var y = -50;
-    var object = this.physics.add.sprite(x, y, 'car1');
-    fallingObjects.add(object);
-    object.setGravityY(200);
-    object.setBounce(0.5);
+    var car1 = this.physics.add.sprite(x, y, 'car1');
+    grupo1.add(car1);
+    car1.setGravityY(200);
+    car1.setBounce(0.5);
+}
+function createFallingObject2() {
+    var x = Phaser.Math.Between(0, game.config.width);
+    var y = -50;
+    var car2 = this.physics.add.sprite(x, y, 'car2');
+    grupo2.add(car2);
+    car2.setGravityY(100);
+    car2.setBounce(0.5);
 }
 
 
