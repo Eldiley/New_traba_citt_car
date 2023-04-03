@@ -111,9 +111,24 @@ function create ()
 
     this.physics.add.collider(player, platforms);
     player.canJump = true;
-     
+    grupostar = this.physics.add.group();
+    grupostar2 = this.physics.add.group();
     grupo1 = this.physics.add.group();
     grupo2 = this.physics.add.group();
+    grupo3 = this.physics.add.group();
+
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObjectstar,
+        callbackScope: this, 
+        loop: true 
+    });
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObjectstar2,
+        callbackScope: this, 
+        loop: true 
+    });
 
     this.time.addEvent({ 
         delay: 1000,
@@ -127,7 +142,12 @@ function create ()
         callbackScope: this, 
         loop: true 
     });
-
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObject3,
+        callbackScope: this, 
+        loop: true 
+    });
 
     // adicionar objetos no grupo
 }
@@ -173,21 +193,45 @@ function update ()
 
     
 }
+function createFallingObjectstar2() {
+    var x = Phaser.Math.Between(90,700, game.config.width);
+    var y = -50;
+    var star2 = this.physics.add.sprite(x, y, 'star');
+    grupostar2.add(star2);
+    star2.setGravityY(150);
+    star2.setBounce(0.5);
+}
+function createFallingObjectstar() {
+    var x = Phaser.Math.Between(90,700, game.config.width);
+    var y = -50;
+    var star = this.physics.add.sprite(x, y, 'star');
+    grupostar.add(star);
+    star.setGravityY(70);
+    star.setBounce(0.5);
+}
 function createFallingObject() {
-    var x = Phaser.Math.Between(0, game.config.width);
+    var x = Phaser.Math.Between(90,700, game.config.width);
     var y = -50;
     var car1 = this.physics.add.sprite(x, y, 'car1');
     grupo1.add(car1);
-    car1.setGravityY(200);
+    car1.setGravityY(170);
     car1.setBounce(0.5);
 }
 function createFallingObject2() {
-    var x = Phaser.Math.Between(0, game.config.width);
+    var x = Phaser.Math.Between(90,700, game.config.width);
     var y = -50;
     var car2 = this.physics.add.sprite(x, y, 'car2');
     grupo2.add(car2);
-    car2.setGravityY(100);
+    car2.setGravityY(110);
     car2.setBounce(0.5);
+}
+function createFallingObject3() {
+    var x = Phaser.Math.Between(90,750, game.config.width);
+    var y = -50;
+    var car3 = this.physics.add.sprite(x, y, 'car4');
+    grupo3.add(car3);
+    car3.setGravityY(150);
+    car3.setBounce(0.7);
 }
 
 
