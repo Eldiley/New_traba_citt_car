@@ -216,7 +216,29 @@ function update ()
     this.physics.add.overlap(player,grupostar,collectstar,null,this);
     this.physics.add.overlap(player,grupostar2,collectstar2,null,this);
     this.physics.add.overlap(player,grupovida,collectstavida,null,this);
+    this.physics.add.collider(player,grupo1,hitgrupo1,null,this);
+    this.physics.add.collider(player,grupo2,hitgrupo2,null,this);~
+    this.physics.add.collider(player,grupo3,hitgrupo3,null,this);
+
     
+}
+function hitgrupo1 (player, grupo1){
+    this.physics.pause();
+    player.setTint(0xff0000);
+    player.anims.play('turn');
+    gameOver = true
+}
+function hitgrupo2 (player, grupo2){
+    this.physics.pause();
+    player.setTint(0xff0000);
+    player.anims.play('turn');
+    gameOver = true
+}
+function hitgrupo3 (player, grupo3){
+    this.physics.pause();
+    player.setTint(0xff0000);
+    player.anims.play('turn');
+    gameOver = true
 }
 function collectstavida(player,grupovida){
     grupovida.destroy();
@@ -255,7 +277,7 @@ function createFallingObject() {
     var car1 = this.physics.add.sprite(x, y, 'car1');
     grupo1.add(car1);
     car1.setGravityY(170);
-    car1.setBounce(0.5);
+    car1.setBounce(2);
 }
 function createFallingObject2() {
     var x = Phaser.Math.Between(90,700, game.config.width);
@@ -263,7 +285,7 @@ function createFallingObject2() {
     var car2 = this.physics.add.sprite(x, y, 'car2');
     grupo2.add(car2);
     car2.setGravityY(110);
-    car2.setBounce(0.5);
+    car2.setBounce(2);
 }
 function createFallingObject3() {
     var x = Phaser.Math.Between(90,750, game.config.width);
@@ -271,7 +293,7 @@ function createFallingObject3() {
     var car3 = this.physics.add.sprite(x, y, 'car5');
     grupo3.add(car3);
     car3.setGravityY(150);
-    car3.setBounce(0.7);
+    car3.setBounce(2);
 }
 function createFallingObjectvida() {
     var x = Phaser.Math.Between(90,750, game.config.width);
@@ -279,7 +301,7 @@ function createFallingObjectvida() {
     var vida = this.physics.add.sprite(x, y, 'vida');
     grupovida.add(vida);
     vida.setGravityY(100);
-    vida.setBounce(0.5);
+    vida.setBounce(0.9);
 }
 
 
