@@ -49,6 +49,7 @@ var speed = 5;
 var mKey;
 var nKey;
 var fallingObjects;
+var acceleration = 1;
 
 
 
@@ -84,8 +85,7 @@ function create ()
     platforms.create(20, 250, 'ground');
     platforms.create(780, 220, 'ground');
     textoVidas = this.add.text(16, 16, 'Vidas: ' + vidas, { fontSize: '32px', fill: '#fff' });
-    textoPontos = this.add.text(game.config.width / 2 - 100, 16, 'Pontos: 0', { fontSize: '32px', fill: '#fff' });
-    textoNivel = this.add.text(600, 16, 'Nível: ' + level, { fontSize: '32px', fill: '#fff' });
+    textoPontos = this.add.text(600, 16, 'Pontos: 0', { fontSize: '32px', fill: '#fff' });
     textoGameOver = this.add.text(200, 250, 'GAME OVAR!', { fontSize: '64px', fill: '#fff' });
     textoGameOver.visible = false;
    
@@ -96,7 +96,6 @@ function create ()
 
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
-
     
    
     //velocidade do objeto car1
@@ -108,10 +107,9 @@ function create ()
     cursors = this.input.keyboard.createCursorKeys();
     mKey = this.input.keyboard.addKey('M');
     nKey = this.input.keyboard.addKey('N');
-
-
     this.physics.add.collider(player, platforms);
     player.canJump = true;
+    player.body.setSize(27,60);
     
     // adicionar objetos no grupo
     grupovida = this.physics.add.group();
@@ -161,6 +159,7 @@ function create ()
     
     
     
+    
 }
 
 function update ()
@@ -168,14 +167,14 @@ function update ()
     if (cursors.left.isDown)
     {
         player.flipX = true // fazer movimento de
-        player.setVelocityX(-300);
+        player.setVelocityX(-350);
 
       
     }// funcao para fazer movimento para direita
     else if (cursors.right.isDown)
     {
         player.flipX = false // fazer movimento
-        player.setVelocityX(300);
+        player.setVelocityX(350);
 
     }
     else
@@ -207,6 +206,13 @@ function update ()
         textoVidas.setText('Vidas: ' + lives);
     }
 
+    objetospeed += acceleration;
+    if(pontos > 10){
+        grupo1.y +=objetospeed;
+        grupo2.y +=objetospeed;
+        grupo3.y +=objetospeed;
+    
+    }
     this.physics.add.collider(grupovida,platforms);
     this.physics.add.collider(grupostar,platforms);
     this.physics.add.collider(grupostar2,platforms);
@@ -217,43 +223,55 @@ function update ()
     this.physics.add.overlap(player,grupostar2,collectstar2,null,this);
     this.physics.add.overlap(player,grupovida,collectstavida,null,this);
     this.physics.add.collider(player,grupo1,hitgrupo1,null,this);
-    this.physics.add.collider(player,grupo2,hitgrupo2,null,this);~
+    this.physics.add.collider(player,grupo2,hitgrupo2,null,this);
     this.physics.add.collider(player,grupo3,hitgrupo3,null,this);
-
+   
+    
+    
+    
     
 }
 function hitgrupo1 (player, grupo1){
+    
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
     gameOver = true
+    textoGameOver.visible = true;
 }
 function hitgrupo2 (player, grupo2){
+    
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
     gameOver = true
+    textoGameOver.visible = true;
 }
 function hitgrupo3 (player, grupo3){
+    
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
     gameOver = true
+    textoGameOver.visible = true;
 }
 function collectstavida(player,grupovida){
     grupovida.destroy();
-    vidas += 1;
+    vidas ++;
     textoVidas.setText('Vidas: ' + vidas);
 }
 function collectstar(player,grupostar){
     grupostar.destroy();
-    pontos += 1;
+    pontos += 5;
     textoPontos.setText('Pontos: ' + pontos);
+    
+    
 }
 function collectstar2(player,grupostar2){
     grupostar2.destroy();
-    pontos += 1;
+    pontos += 5;
     textoPontos.setText('Pontos: ' + pontos);
+    
 }
 function createFallingObjectstar2() {
     var x = Phaser.Math.Between(90,700, game.config.width);
