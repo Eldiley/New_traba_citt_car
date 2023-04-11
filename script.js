@@ -2,6 +2,7 @@ var config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
+    scene: [ecraStart],
     physics: {
         default: 'arcade',
         arcade: {
@@ -49,8 +50,7 @@ var speed = 5;
 var mKey;
 var nKey;
 var fallingObjects;
-var acceleration = 1;
-
+var acceleration= 1;
 
 
 var scenarySpeed = 1; // variavel para definir a velocidade do cenario
@@ -70,12 +70,14 @@ function preload ()
     this.load.image('car6','assets/car6.png');
     this.load.image('car7','assets/car7.png');
     this.load.image('vida','assets/vida.png');
+    this.load.image('start','assets/start.png');
 }
 
 
 function create ()
 {
     this.add.image(400, 300, 'sky');
+    
     
     platforms = this.physics.add.staticGroup();
 
@@ -111,6 +113,8 @@ function create ()
     player.canJump = true;
     player.body.setSize(27,60);
     
+    
+    
     // adicionar objetos no grupo
     grupovida = this.physics.add.group();
     grupostar = this.physics.add.group();
@@ -118,7 +122,8 @@ function create ()
     grupo1 = this.physics.add.group();
     grupo2 = this.physics.add.group();
     grupo3 = this.physics.add.group();
-
+    grupo4 = this.physics.add.group();
+    
     this.time.addEvent({ 
         delay: 1000,
         callback: createFallingObjectvida,
@@ -156,8 +161,27 @@ function create ()
         callbackScope: this, 
         loop: true 
     });
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObject4,
+        callbackScope: this, 
+        loop: true 
+    });
     
-    
+    this.physics.add.collider(grupovida,platforms);
+    this.physics.add.collider(grupostar,platforms);
+    this.physics.add.collider(grupostar2,platforms);
+    this.physics.add.collider(grupo1,platforms);
+    this.physics.add.collider(grupo2,platforms);
+    this.physics.add.collider(grupo3,platforms);
+    this.physics.add.collider(grupo4,platforms);
+    this.physics.add.overlap(player,grupostar,collectstar,null,this);
+    this.physics.add.overlap(player,grupostar2,collectstar2,null,this);
+    this.physics.add.overlap(player,grupovida,collectstavida,null,this);
+    this.physics.add.collider(player,grupo1,hitgrupo1,null,this);
+    this.physics.add.collider(player,grupo2,hitgrupo2,null,this);
+    this.physics.add.collider(player,grupo3,hitgrupo3,null,this);
+    this.physics.add.collider(player,grupo4,hitgrupo4,null,this);
     
     
 }
@@ -205,31 +229,26 @@ function update ()
         lives = 100;
         textoVidas.setText('Vidas: ' + lives);
     }
-
+    acceleration = Phaser.Math.FloatBetween(0.1, 1);
     objetospeed += acceleration;
-    if(pontos > 10){
-        grupo1.y +=objetospeed;
-        grupo2.y +=objetospeed;
-        grupo3.y +=objetospeed;
+    for(var i = 0; i<pontos;i++){
+         if(i > 10){
+            grupo1.y +=objetospeed;
+            grupo2.y +=objetospeed;
+            grupo3.y +=objetospeed;
+            grupo4.y +=objetospeed;
     
+        }
     }
-    this.physics.add.collider(grupovida,platforms);
-    this.physics.add.collider(grupostar,platforms);
-    this.physics.add.collider(grupostar2,platforms);
-    this.physics.add.collider(grupo1,platforms);
-    this.physics.add.collider(grupo2,platforms);
-    this.physics.add.collider(grupo3,platforms);
-    this.physics.add.overlap(player,grupostar,collectstar,null,this);
-    this.physics.add.overlap(player,grupostar2,collectstar2,null,this);
-    this.physics.add.overlap(player,grupovida,collectstavida,null,this);
-    this.physics.add.collider(player,grupo1,hitgrupo1,null,this);
-    this.physics.add.collider(player,grupo2,hitgrupo2,null,this);
-    this.physics.add.collider(player,grupo3,hitgrupo3,null,this);
+
+    
+   
+ 
    
     
     
     
-    
+    start = this.add.image(0,0,'start').setOrigin(0);
 }
 function hitgrupo1 (player, grupo1){
     
@@ -248,6 +267,14 @@ function hitgrupo2 (player, grupo2){
     textoGameOver.visible = true;
 }
 function hitgrupo3 (player, grupo3){
+    
+    this.physics.pause();
+    player.setTint(0xff0000);
+    player.anims.play('turn');
+    gameOver = true
+    textoGameOver.visible = true;
+}
+function hitgrupo4 (player, grupo4){
     
     this.physics.pause();
     player.setTint(0xff0000);
@@ -294,27 +321,45 @@ function createFallingObject() {
     var y = -50;
     var car1 = this.physics.add.sprite(x, y, 'car1');
     grupo1.add(car1);
-    car1.setGravityY(170);
+    car1.setGravityY(200);
     car1.setBounce(2);
+    car1.body.setSize(27,60);
+    
+    
+    
 }
 function createFallingObject2() {
     var x = Phaser.Math.Between(90,700, game.config.width);
     var y = -50;
     var car2 = this.physics.add.sprite(x, y, 'car2');
     grupo2.add(car2);
-    car2.setGravityY(110);
+    car2.setGravityY(170);
     car2.setBounce(2);
+    car2.body.setSize(27,60);
+   
 }
 function createFallingObject3() {
-    var x = Phaser.Math.Between(90,750, game.config.width);
+    var x = Phaser.Math.Between(90,740, game.config.width);
     var y = -50;
     var car3 = this.physics.add.sprite(x, y, 'car5');
     grupo3.add(car3);
-    car3.setGravityY(150);
+    car3.setGravityY(250);
     car3.setBounce(2);
+    car3.body.setSize(27,60);
+   
+}
+function createFallingObject4() {
+    var x = Phaser.Math.Between(90,700, game.config.width);
+    var y = -50;
+    var car4 = this.physics.add.sprite(x, y, 'car6');
+    grupo4.add(car4);
+    car4.setGravityY(250);
+    car4.setBounce(2);
+    car4.body.setSize(27,60);
+   
 }
 function createFallingObjectvida() {
-    var x = Phaser.Math.Between(90,750, game.config.width);
+    var x = Phaser.Math.Between(90,740, game.config.width);
     var y = -50;
     var vida = this.physics.add.sprite(x, y, 'vida');
     grupovida.add(vida);

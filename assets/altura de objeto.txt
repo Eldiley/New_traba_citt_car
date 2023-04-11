@@ -1,2 +1,2 @@
-largura 351
-altura 530
+largura 58
+altura 95
