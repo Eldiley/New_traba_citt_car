@@ -2,7 +2,7 @@ var config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    scene: [ecraStart],
+    
     physics: {
         default: 'arcade',
         arcade: {
@@ -30,26 +30,17 @@ var car4;
 var car5;
 var car6;
 var car7;
-var lives
-var textLevel;
-var level=1;
-var objetos;
-var vida;
 var objetoconter;
 var objetospeed = 100;
 var objetostime;
 var gameOver = false;
-var textoVidas;
 var textoPontos;
-var textoNivel;
 var textoGameOver;
-var vidas = 3;
 var pontos = 0;
 var cursors;
 var speed = 5;
-var mKey;
-var nKey;
-var fallingObjects;
+
+
 var acceleration= 1;
 
 
@@ -69,13 +60,16 @@ function preload ()
     this.load.image('car5','assets/car5.png');
     this.load.image('car6','assets/car6.png');
     this.load.image('car7','assets/car7.png');
-    this.load.image('vida','assets/vida.png');
-    this.load.image('start','assets/start.png');
+    this.load.audio('musica1','music/snd_music.ogg');
+    this.load.audio('musica2','music/chocar.wav');
+    this.load.audio('musica3','music/gameover.wav');
+    this.load.audio('musica4','music/snd_getcoin.ogg');
 }
 
 
 function create ()
 {
+    
     this.add.image(400, 300, 'sky');
     
     
@@ -86,9 +80,8 @@ function create ()
     this.estrada = this.add.tileSprite(400, 300, config.width, config.height, "estrada");
     platforms.create(20, 250, 'ground');
     platforms.create(780, 220, 'ground');
-    textoVidas = this.add.text(16, 16, 'Vidas: ' + vidas, { fontSize: '32px', fill: '#fff' });
-    textoPontos = this.add.text(600, 16, 'Pontos: 0', { fontSize: '32px', fill: '#fff' });
-    textoGameOver = this.add.text(200, 250, 'GAME OVAR!', { fontSize: '64px', fill: '#fff' });
+    textoPontos = this.add.text(50, 16, 'Pontos: 0', { fontSize: '32px', fill: '#fff' });
+    textoGameOver = this.add.text(200, 250, 'GAME OVER!', { fontSize: '64px', fill: '#fff' });
     textoGameOver.visible = false;
    
 
@@ -100,12 +93,7 @@ function create ()
     player.setCollideWorldBounds(true);
     
    
-    //velocidade do objeto car1
     
-
-    
-
-
     cursors = this.input.keyboard.createCursorKeys();
     mKey = this.input.keyboard.addKey('M');
     nKey = this.input.keyboard.addKey('N');
@@ -116,29 +104,39 @@ function create ()
     
     
     // adicionar objetos no grupo
-    grupovida = this.physics.add.group();
+    
     grupostar = this.physics.add.group();
     grupostar2 = this.physics.add.group();
     grupo1 = this.physics.add.group();
     grupo2 = this.physics.add.group();
     grupo3 = this.physics.add.group();
     grupo4 = this.physics.add.group();
+    grupo4 = this.physics.add.group();
+    grupo5 = this.physics.add.group();
+    grupo6 = this.physics.add.group();
+    musica1 = this.sound.add('musica1');
+    musica1.play({
+        volume: 0.5,
+        loop:true
+    })
+    musica4 = this.sound.add('musica4');
+    musica2 = this.sound.add('musica2');
+    musica3 = this.sound.add('musica3');
     
-    this.time.addEvent({ 
-        delay: 1000,
-        callback: createFallingObjectvida,
-        callbackScope: this, 
-        loop: true 
-    });
+    
+    
+  
     this.time.addEvent({ 
         delay: 1000,
         callback: createFallingObjectstar,
+        
         callbackScope: this, 
         loop: true 
     });
     this.time.addEvent({ 
         delay: 1000,
         callback: createFallingObjectstar2,
+        
         callbackScope: this, 
         loop: true 
     });
@@ -167,23 +165,39 @@ function create ()
         callbackScope: this, 
         loop: true 
     });
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObject5,
+        callbackScope: this, 
+        loop: true 
+    });
+    this.time.addEvent({ 
+        delay: 1000,
+        callback: createFallingObject6,
+        callbackScope: this, 
+        loop: true 
+    });
     
-    this.physics.add.collider(grupovida,platforms);
+   
     this.physics.add.collider(grupostar,platforms);
     this.physics.add.collider(grupostar2,platforms);
     this.physics.add.collider(grupo1,platforms);
     this.physics.add.collider(grupo2,platforms);
     this.physics.add.collider(grupo3,platforms);
     this.physics.add.collider(grupo4,platforms);
+    this.physics.add.collider(grupo5,platforms);
+    this.physics.add.collider(grupo6,platforms);
     this.physics.add.overlap(player,grupostar,collectstar,null,this);
     this.physics.add.overlap(player,grupostar2,collectstar2,null,this);
-    this.physics.add.overlap(player,grupovida,collectstavida,null,this);
+    
     this.physics.add.collider(player,grupo1,hitgrupo1,null,this);
     this.physics.add.collider(player,grupo2,hitgrupo2,null,this);
     this.physics.add.collider(player,grupo3,hitgrupo3,null,this);
     this.physics.add.collider(player,grupo4,hitgrupo4,null,this);
+    this.physics.add.collider(player,grupo5,hitgrupo5,null,this);
+    this.physics.add.collider(player,grupo6,hitgrupo6,null,this);
     
-    
+   
 }
 
 function update ()
@@ -225,18 +239,17 @@ function update ()
         return;
     }
 
-    if (mKey.isDown) {
-        lives = 100;
-        textoVidas.setText('Vidas: ' + lives);
-    }
+    
     acceleration = Phaser.Math.FloatBetween(0.1, 1);
     objetospeed += acceleration;
-    for(var i = 0; i<pontos;i++){
+    for(var i = 0; i<grupostar;i++){
          if(i > 10){
             grupo1.y +=objetospeed;
             grupo2.y +=objetospeed;
             grupo3.y +=objetospeed;
             grupo4.y +=objetospeed;
+            grupo5.y +=objetospeed;
+            grupo6.y +=objetospeed;
     
         }
     }
@@ -248,56 +261,87 @@ function update ()
     
     
     
-    start = this.add.image(0,0,'start').setOrigin(0);
+   
 }
 function hitgrupo1 (player, grupo1){
-    
+    musica2.play();
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
     gameOver = true
     textoGameOver.visible = true;
+    musica3.play();
+    musica1.stop();
 }
 function hitgrupo2 (player, grupo2){
-    
+    musica2.play();
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
     gameOver = true
     textoGameOver.visible = true;
+    musica3.play();
+    musica1.stop();
 }
 function hitgrupo3 (player, grupo3){
-    
+    musica2.play();
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
     gameOver = true
     textoGameOver.visible = true;
+    musica3.play();
+    musica1.stop();
 }
 function hitgrupo4 (player, grupo4){
-    
+    musica2.play();
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
     gameOver = true
     textoGameOver.visible = true;
+    musica3.play();
+    musica1.stop();
 }
-function collectstavida(player,grupovida){
-    grupovida.destroy();
-    vidas ++;
-    textoVidas.setText('Vidas: ' + vidas);
+function hitgrupo5 (player, grupo5){
+    musica2.play();
+    this.physics.pause();
+    player.setTint(0xff0000);
+    player.anims.play('turn');
+    gameOver = true
+    textoGameOver.visible = true;
+    musica3.play();
+    musica1.stop();
 }
-function collectstar(player,grupostar){
-    grupostar.destroy();
+function hitgrupo6 (player, grupo6){
+    musica2.play();
+    this.physics.pause();
+    player.setTint(0xff0000);
+    player.anims.play('turn');
+    gameOver = true
+    textoGameOver.visible = true;
+    musica3.play();
+    musica1.stop();
+}
+
+function collectstar(player,star){
+    
+    star.disableBody(true, true);
     pontos += 5;
     textoPontos.setText('Pontos: ' + pontos);
+    musica4.play()
+    
+    
     
     
 }
-function collectstar2(player,grupostar2){
-    grupostar2.destroy();
+function collectstar2(player,star2){
+   
+    star2.disableBody(true, true);
     pontos += 5;
     textoPontos.setText('Pontos: ' + pontos);
+    musica4.play()
+    
     
 }
 function createFallingObjectstar2() {
@@ -307,6 +351,7 @@ function createFallingObjectstar2() {
     grupostar2.add(star2);
     star2.setGravityY(150);
     star2.setBounce(0.5);
+    star2.body.setSize(40,40);
 }
 function createFallingObjectstar() {
     var x = Phaser.Math.Between(90,700, game.config.width);
@@ -315,6 +360,7 @@ function createFallingObjectstar() {
     grupostar.add(star);
     star.setGravityY(70);
     star.setBounce(0.5);
+    star.body.setSize(40,40);
 }
 function createFallingObject() {
     var x = Phaser.Math.Between(90,700, game.config.width);
@@ -324,6 +370,7 @@ function createFallingObject() {
     car1.setGravityY(200);
     car1.setBounce(2);
     car1.body.setSize(27,60);
+    car1.setVelocity(Phaser.Math.Between(-100, 100), 10);
     
     
     
@@ -346,6 +393,7 @@ function createFallingObject3() {
     car3.setGravityY(250);
     car3.setBounce(2);
     car3.body.setSize(27,60);
+    
    
 }
 function createFallingObject4() {
@@ -358,14 +406,28 @@ function createFallingObject4() {
     car4.body.setSize(27,60);
    
 }
-function createFallingObjectvida() {
-    var x = Phaser.Math.Between(90,740, game.config.width);
+function createFallingObject5() {
+    var x = Phaser.Math.Between(90,700, game.config.width);
     var y = -50;
-    var vida = this.physics.add.sprite(x, y, 'vida');
-    grupovida.add(vida);
-    vida.setGravityY(100);
-    vida.setBounce(0.9);
+    var car5 = this.physics.add.sprite(x, y, 'car4');
+    grupo5.add(car5);
+    car5.setGravityY(250);
+    car5.setBounce(2);
+    car5.body.setSize(27,60);
+    car5.setVelocity(Phaser.Math.Between(-100, 100), 10);
+   
 }
+function createFallingObject6() {
+    var x = Phaser.Math.Between(90,700, game.config.width);
+    var y = -50;
+    var car6 = this.physics.add.sprite(x, y, 'car3');
+    grupo6.add(car6);
+    car6.setGravityY(250);
+    car6.setBounce(2);
+    car6.body.setSize(27,60);
+   
+}
+
 
 
 //funcao para creiar movimento dos elementos do cenario
